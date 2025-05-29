@@ -2,15 +2,19 @@
 <!--  ➿〰️➖🔹-->
 
 A tool for Reinforcement Learning development that separates the runtime environments of agents and RL environments. 
-This tool addresses the challenges of dependency management in RL development (i.e., conflicting dependencies) by serving 
+This tool addresses the challenges of dependency management in RL development (e.g., conflicting dependencies) by serving 
 RL environments through isolated Docker containers.
+
+* Experimenting with new RL environments without irreversible changes to your Python / Conda environment is now possible!
+* Want to use that one environment that requires an ancient Ubuntu & Python 2.7? No problem!
+* Multiple RL environments with conflicting dependencies can coexist without any issues!
 
 
 Portal-Env creates a clean separation between:
 1. The **agent's runtime environment** - where the RL algorithm is implemented and executed.
 2. The **RL environment's runtime environment** - containing the RL environment and its dependencies.
 
-This separation is implemented via a communication "portal" that enables seamless interaction between 
+A communication "portal" enables seamless interaction between 
 the agent and the environment while keeping their runtime environments isolated.
 
 [//]: # (### Core Components)
@@ -27,7 +31,7 @@ the agent and the environment while keeping their runtime environments isolated.
 
 
 ## Installation
-### Requirements
+#### Requirements
 - Docker
 
 ```bash
