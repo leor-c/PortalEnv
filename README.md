@@ -1,8 +1,9 @@
-# Portal-Env
+#  Portal-Env  🤖🪞✨➖✨🪞🌍 
+<!--  ➿〰️➖🔹-->
 
-A tool for Reinforcement Learning that separates the runtime environment of agents and their environments 
-(worlds/games). This package addresses the challenges of dependency management in RL development by using 
-containerized environments for both agents and their worlds.
+A tool for Reinforcement Learning development that separates the runtime environment of agents and RL environments. 
+This package addresses the challenges of dependency management in RL development by serving 
+RL environments through isolated Docker containers.
 
 
 Portal-Env creates a clean separation between:
@@ -40,14 +41,15 @@ pip install portal-env
 ### Basic Agent Usage
 
 After starting the environment-side portal (detailed below), you can interact with the environment using 
-the `AgentSidePortal`, which takes optional arguments for environment setup:
+the `AgentSidePortal`, which requires `<env_name>` (detailed below) as the first argument and takes 
+optional arguments and keyword arguments for environment setup:
 ```python
 from portal_env import AgentSidePortal
 from stable_baselines3 import PPO
 
 
 # Initialize the agent-side portal and the environment
-env = AgentSidePortal("ALE/Pong-v5")  # pass environment setup arguments here
+env = AgentSidePortal(env_name="ale", env_args=["ALE/Pong-v5"])  # pass environment setup arguments here
 
 # Initialize the agent
 agent = PPO("MlpPolicy", env, verbose=1)
@@ -62,7 +64,7 @@ from my_agent import Agent
 
 
 # Initialize the agent-side portal and the environment
-env = AgentSidePortal("ALE/Pong-v5")  # pass environment setup arguments here
+env = AgentSidePortal(env_name="ale", env_args=["ALE/Pong-v5"])  # pass environment setup arguments here
 
 # Initialize the agent
 agent = Agent(env.action_space)
@@ -91,6 +93,9 @@ To launch a supported environment using the cli tool, use:
 ```bash
 portal-env start <env_name>
 ```
+Here, `<env_name>` denotes a unique environment name.
+It should be supplied to the agent-side portal, `AgentSidePortal`, as the first argument during initialization.
+
 This command will start the environment portal by automatically building the Docker image and 
 starting a corresponding Docker container.
 As in the example above, environment setup arguments should be passed to the `AgentSidePortal` (agent-side).
@@ -130,9 +135,9 @@ Note that the environment's dependencies (e.g., `ale_py`) should only be install
 2. **Environment Dockerfile** (`Dockerfile.env`):
 A Dockerfile for building the Docker image of the environment. This Dockerfile should contain the following:
 - Install environment-specific dependencies
-- Install Portal-Env dependencies: `RUN pip install portal-env`
+- Install Portal-Env (`RUN pip install portal-env`)
 - Copy your environment code
-- Run the main script from step 1 above using e.g., `CMD ["python", "env_main.py"]`.
+- Run the main script from step 1 above using `CMD ["python", "env_main.py"]`.
 ```dockerfile
 FROM python:3.12-slim
 
@@ -150,10 +155,10 @@ CMD ["python", "env_main.py"]
 
 You can launch your custom environments automatically using the cli tool:
 ```bash
-portal-env start -p <path-to-custom-env-dir> <custom-env-name>
+portal-env start -p <path-to-custom-env-dir> <env-name>
 ```
 where `<path-to-custom-env-dir>` is the path to the directory containing the `Dockerfile.env` and `env_main.py` files,
-and `<custom-env-name>` is the name of the environment.
+and `<env-name>` is the name of the environment (should be unique).
 
 
 

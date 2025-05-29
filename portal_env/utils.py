@@ -48,6 +48,8 @@ def ensure_docker_network_exists(network_name: str):
         subprocess.run(["docker", "network", "create", network_name], check=True)
 
 
+# TODO: Improve this function.
+# TODO: Write tests for this function.
 def parse_gym_space(space_str: str) -> gym.Space:
     space_str = space_str.strip()
 
@@ -75,13 +77,14 @@ def parse_gym_space(space_str: str) -> gym.Space:
 
     # Box(low, high, shape, dtype)
     if space_str.startswith("Box"):
-        shape_regex = r"(\(\s*(\d+\s*(,\s*\d+\s*)*)?\)){1}"
-        match = re.fullmatch(rf"Box\((.*?), (.*?), {shape_regex}, (.*?)\)", space_str)
+        shape_regex = r"(\(\s*\d+,\s*(\d+\s*(,\s*\d+\s*)*)?\))"
+        non_shape_regex = r"(.*?)"
+        match = re.fullmatch(rf"Box\(({shape_regex}|{non_shape_regex}), ({shape_regex}|{non_shape_regex}), {shape_regex}, (.*?)\)", space_str)
         if match:
-            low = ast.literal_eval(match.group(1))
-            high = ast.literal_eval(match.group(2))
-            shape = ast.literal_eval(match.group(3))
-            dtype_str = match.group(6).strip()
+            low = resolve_low_high(match.group(1))
+            high = resolve_low_high(match.group(6))
+            shape = ast.literal_eval(match.group(11))
+            dtype_str = match.group(14).strip()
             dtype = resolve_dtype(dtype_str)
             return gym.spaces.Box(low=low, high=high, shape=shape, dtype=dtype)
 
@@ -133,4 +136,18 @@ def resolve_dtype(dtype_str: str) -> np.dtype:
             return getattr(np, dtype_str)
         except AttributeError:
             raise ValueError(f"Unknown dtype: {dtype_str}")
+
+def resolve_low_high(value: str):
+    if value == '-inf':
+        return -np.inf
+    elif value == 'inf':
+        return np.inf
+    else:
+        try:
+            return ast.literal_eval(value)
+        except ValueError:
+            try:
+                return getattr(np, value)
+            except AttributeError:
+                raise ValueError(f"Unknown dtype: {value}")
 

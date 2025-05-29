@@ -1,15 +1,27 @@
 import portal
 import numpy as np
-from typing import Any
+from typing import Any, Optional, Iterable, Union
 import gymnasium as gym
 from portal_env.config import config
 from portal_env.utils import parse_gym_space
 
 
 class AgentSidePortal(gym.Env):
-    def __init__(self, *env_args, **env_kwargs):
-        self.portal = portal.Client(f"{config.host_name}_ale:{config.port}")
+    def __init__(
+        self,
+        env_name: str,
+        env_args: Optional[Union[list[Any], tuple[Any, ...]]] = None,
+        env_kwargs: Optional[dict[str, Any]] = None,
+    ):
+        self.portal = portal.Client(f"{config.host_name}_{env_name}:{config.port}")
         self._env_id = None
+
+        if env_args is None:
+            env_args = []
+        assert isinstance(env_args, (list, tuple)), "env_args must be a list or tuple"
+        if env_kwargs is None:
+            env_kwargs = {}
+        assert isinstance(env_kwargs, dict), "env_kwargs must be a dict"
 
         self._init_env(*env_args, **env_kwargs)
 
@@ -42,5 +54,3 @@ class AgentSidePortal(gym.Env):
         self._assert_env_init()
         future = self.portal.observation_space(self._env_id)
         return parse_gym_space(future.result())
-
-
