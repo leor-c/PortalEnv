@@ -109,9 +109,8 @@ A script that starts the environment-side portal (server) and provides it with a
 from portal_env import EnvSidePortal
 from your_env import YourEnvironment  # Your custom environment
 
-if __name__ == "__main__":
-    portal = EnvSidePortal(env_factory=YourEnvironment)
-    portal.run()
+portal = EnvSidePortal(env_factory=YourEnvironment)
+portal.run()
 ```
 
 E.g., to set up an Atari environment portal:
@@ -129,7 +128,7 @@ def main():
 if __name__ == '__main__':
     main()
 ```
-Note that the environment's dependencies (e.g., `ale_py`) should only be installed in the *environment* Dockerfile (see below).
+Note that the environment's dependencies (e.g., `ale_py`) should only be installed through the *environment* Dockerfile (see below).
 
 2. **Environment Dockerfile** (`Dockerfile.env`):
 A Dockerfile for building the Docker image of the environment. This Dockerfile should contain the following:
