@@ -1,30 +1,29 @@
 #  Portal-Env  🤖🪞✨➖✨🪞🌍 
 <!--  ➿〰️➖🔹-->
 
-A tool for Reinforcement Learning development that separates the runtime environment of agents and RL environments. 
-This package addresses the challenges of dependency management in RL development by serving 
+A tool for Reinforcement Learning development that separates the runtime environments of agents and RL environments. 
+This tool addresses the challenges of dependency management in RL development (i.e., conflicting dependencies) by serving 
 RL environments through isolated Docker containers.
 
 
 Portal-Env creates a clean separation between:
 1. The **agent's runtime environment** - where the RL algorithm is implemented and executed.
-2. The **environment's runtime environment** - containing the environment (e.g., game/world) and its dependencies.
+2. The **RL environment's runtime environment** - containing the RL environment and its dependencies.
 
 This separation is implemented via a communication "portal" that enables seamless interaction between 
 the agent and the environment while keeping their runtime environments isolated.
 
-### Design Overview
+[//]: # (### Core Components)
 
-#### 1. Agent Side  
-- Runs the RL algorithm.
-- Includes dependencies required for the agent's logic and training.
-- Interfaces with the environment through an `AgentSidePortal`.
+[//]: # ()
+[//]: # (**Agent Side**: )
 
-#### 2. Environment Side  
-- Runs within an isolated container.
-- Initializes and manages the RL environment.
-- Includes environment-specific dependencies.
-- Interfaces with the agent through an `EnvSidePortal`.
+[//]: # (Interfaces with the environment through an `AgentSidePortal`.)
+
+[//]: # ()
+[//]: # (**Environment Side**:)
+
+[//]: # (Interfaces with the agent through an `EnvSidePortal`.)
 
 
 ## Installation
