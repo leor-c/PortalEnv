@@ -33,6 +33,7 @@ the agent and the environment while keeping their runtime environments isolated.
 ## Installation
 #### Requirements
 - Docker
+- Unix-based OS if not using Docker to run your agent
 
 ```bash
 pip install portal-env
@@ -81,6 +82,27 @@ while not done:
     done = terminated or truncated
 ```
 
+If your agent is launched through a Docker container, please add the portal network name either 
+to your `docker run` command via the `--network portal_env_net` argument:
+```
+docker run --network portal_env_net ... (rest of your command)
+```
+
+or to your `docker-compose.yaml` file if you use one:
+```
+services:
+    <agent_service_name>:
+        ...
+        networks:
+            - portal_env_net
+        
+        
+networks:
+    portal_env_net:
+        external: true
+```
+
+We highly recommend using Docker!
 
 ### Launching an Environment Portal
 We provide a collection of pre-built environment portals for popular environments, 
