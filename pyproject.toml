@@ -18,6 +18,9 @@ classifiers = [
 ]
 dependencies = [
     "portal",
+    "gymnasium",
+    "click",
+    "numpy",
 ]
 
 [project.urls]
