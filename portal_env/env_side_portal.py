@@ -23,10 +23,8 @@ class EnvSidePortal:
         self.portal.bind('observation_space', partial(self._space_handler, space_type='observation_space'))
 
     def _create_env(self, *args, **kwargs):
-        try:
-            env = self.env_factory(*args, **kwargs)
-        except RuntimeError as e:
-            print(f"couldn't create env with args='{args}', kwargs={kwargs}. Error: {e}")
+        env = self.env_factory(*args, **kwargs)
+        
         with self._lock:
             env_id = self._next_id
             self._envs[env_id] = env
