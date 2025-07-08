@@ -9,7 +9,7 @@ from typing import Callable, Any
 
 
 class EnvSidePortal:
-    def __init__(self, env_factory: Callable[[Any, ...], gym.Env], port: int = config.port):
+    def __init__(self, env_factory: Callable[[Any], gym.Env], port: int = config.port):
         self.portal = portal.BatchServer(port)
         self.env_factory = env_factory
         self._envs = {}
@@ -23,7 +23,10 @@ class EnvSidePortal:
         self.portal.bind('observation_space', partial(self._space_handler, space_type='observation_space'))
 
     def _create_env(self, *args, **kwargs):
-        env = self.env_factory(*args, **kwargs)
+        try:
+            env = self.env_factory(*args, **kwargs)
+        except RuntimeError as e:
+            print(f"couldn't create env with args='{args}', kwargs={kwargs}. Error: {e}")
         with self._lock:
             env_id = self._next_id
             self._envs[env_id] = env

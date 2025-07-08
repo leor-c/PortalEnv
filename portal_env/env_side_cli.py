@@ -13,7 +13,8 @@ supported_envs_aliases = {
 }
 supported_envs = [
     "ale",
-    "mujoco"
+    "mujoco",
+    "retro",
 ]
 
 

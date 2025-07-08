@@ -1,4 +1,5 @@
 import subprocess
+from typing import List
 
 import numpy as np
 import gymnasium as gym
@@ -108,7 +109,7 @@ def parse_gym_space(space_str: str) -> gym.Space:
 
     raise ValueError(f"Unsupported Gym space string: {space_str}")
 
-def split_top_level_commas(s: str) -> list[str]:
+def split_top_level_commas(s: str) -> List[str]:
     """
     Splits a string by top-level commas, ignoring those inside parentheses.
     For example: "Discrete(2), Box(0,1,(2,),np.float32)" => ["Discrete(2)", "Box(0,1,(2,),np.float32)"]
