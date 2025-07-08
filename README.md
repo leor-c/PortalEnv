@@ -110,6 +110,7 @@ together with a cli tool `portal-env` for launching them (and also custom enviro
 Currently, we support the following environments:
 - Atari Learning Environment (`ale`)
 - Mujoco and Gymnasium environments (`mujoco`)
+- [OpenAI Retro](https://github.com/openai/retro) (`retro`)
 
 We hope to support more environments in the future.
 Contributions are welcome!
