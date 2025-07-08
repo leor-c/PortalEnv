@@ -55,7 +55,9 @@ class AgentSidePortal(gym.Env):
     def step(self, action) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         self._assert_env_init()
         future = self.portal.step(self._env_id, action)
-        return future.result()
+        # `portal` modifies the object types, convert them back:
+        obs, reward, terminated, truncated, info = future.result()
+        return obs, float(reward), bool(terminated), bool(truncated), info
 
     @property
     def action_space(self):
