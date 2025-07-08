@@ -82,7 +82,9 @@ while not done:
     done = terminated or truncated
 ```
 
-If your agent is launched through a Docker container, please add the portal network name either 
+If your agent is launched through a Docker container, please apply the following two modifications:
+1. When calling `AgentSidePortal`, set the `agent_in_docker` argument to `True` (e.g., `AgentSidePortal(..., agent_in_docker=True)`). This is important for establishing the portal connection.
+2. Add the portal network name either 
 to your `docker run` command via the `--network portal_env_net` argument:
 ```
 docker run --network portal_env_net ... (rest of your command)
@@ -111,6 +113,7 @@ Currently, we support the following environments:
 - Atari Learning Environment (`ale`)
 - Mujoco and Gymnasium environments (`mujoco`)
 - [OpenAI Retro](https://github.com/openai/retro) (`retro`)
+- [Craftium](https://github.com/mikelma/craftium) (`craftium`)
 
 We hope to support more environments in the future.
 Contributions are welcome!

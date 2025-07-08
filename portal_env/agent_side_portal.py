@@ -12,8 +12,22 @@ class AgentSidePortal(gym.Env):
         env_name: str,
         env_args: Optional[Union[List[Any], Tuple[Any]]] = None,
         env_kwargs: Optional[Dict[str, Any]] = None,
+        agent_in_docker: bool = False
     ):
-        self.portal = portal.Client(f"{config.host_name}_{env_name}:{config.port}")
+        """
+        :param env_name: string. The name of the environment.
+        :param env_args: A list of arguments for creating an instance of 
+        the environment.
+        :param env_kwargs: a dictionary of keyword arguments for creating
+        an instance of the environment.
+        :param agent_in_docker: whether the agent is running inside a Docker container
+        (True) or directly on the host machine (False). This value is important for
+        connecting to the environment container. 
+        """
+        host_name = 'localhost'
+        if agent_in_docker:
+            host_name = f"{config.host_name}_{env_name}"
+        self.portal = portal.Client(f"{host_name}:{config.port}")
         self._env_id = None
 
         if env_args is None:
