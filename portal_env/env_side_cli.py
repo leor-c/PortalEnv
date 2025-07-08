@@ -15,6 +15,7 @@ supported_envs = [
     "ale",
     "mujoco",
     "retro",
+    "craftium"
 ]
 
 
