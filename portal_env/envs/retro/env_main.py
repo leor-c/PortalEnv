@@ -22,7 +22,7 @@ class GymnasiumWrapper(gymnasium.Env):
         return self.retro_env.observation_space
 
     def step(self, action):
-        obs, reward, done, info = self.retro_env.step(int(action))
+        obs, reward, done, info = self.retro_env.step(action)
         terminated = done
         truncated = False
         return obs, reward, terminated, truncated, info

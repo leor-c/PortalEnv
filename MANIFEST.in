@@ -1,1 +1,2 @@
 recursive-include portal_env/envs *.env
+prune build

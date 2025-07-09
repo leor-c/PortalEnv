@@ -48,7 +48,6 @@ class EnvSidePortal:
     def _space_handler(self, env_id: int, space_type: str):
         env_id = handle_raw_integer(env_id)
         assert isinstance(env_id, int), f"Got invalid env_id: {env_id}"
-        print(f"Got env_id: {env_id}, space_type: {space_type}")
         assert env_id in self._envs, f"Invalid env_id: {env_id}"
         env = self._envs[env_id]
         return str(getattr(env, space_type))
@@ -59,17 +58,17 @@ class EnvSidePortal:
     def __del__(self):
         with self._lock:
             for env_id, env in self._envs.items():
-                print(f"Closing environment '{env_id}'...")
+                print(f"Closing environment '{env_id}'...", flush=True)
                 env.close()
-        print(f"Closed all envs!")
+        print(f"Closed all envs!", flush=True)
 
     def _close_env_handler(self, env_id: int):
         env_id = handle_raw_integer(env_id)
         assert env_id in self._envs, f"Invalid env_id: {env_id}"
-        print(f"Closing env '{env_id}'...")
+        print(f"Closing env '{env_id}'...", flush=True)
         with self._lock:
             self._envs[env_id].close()
             del self._envs[env_id]
-        print(f"Closed!")
+        print(f"Closed!", flush=True)
 
 
