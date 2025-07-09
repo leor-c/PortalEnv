@@ -21,9 +21,10 @@ class EnvSidePortal:
         self.portal.bind('step', self._step_handler)
         self.portal.bind('action_space', partial(self._space_handler, space_type='action_space'))
         self.portal.bind('observation_space', partial(self._space_handler, space_type='observation_space'))
+        self.portal.bind('close_env', self._close_env_handler)
 
-    def _create_env(self, *args, **kwargs):
-        env = self.env_factory(*args, **kwargs)
+    def _create_env(self, env_args, env_kwargs):
+        env = self.env_factory(*env_args, **env_kwargs)
         
         with self._lock:
             env_id = self._next_id
@@ -54,5 +55,21 @@ class EnvSidePortal:
 
     def start(self):
         self.portal.start()
+
+    def __del__(self):
+        with self._lock:
+            for env_id, env in self._envs.items():
+                print(f"Closing environment '{env_id}'...")
+                env.close()
+        print(f"Closed all envs!")
+
+    def _close_env_handler(self, env_id: int):
+        env_id = handle_raw_integer(env_id)
+        assert env_id in self._envs, f"Invalid env_id: {env_id}"
+        print(f"Closing env '{env_id}'...")
+        with self._lock:
+            self._envs[env_id].close()
+            del self._envs[env_id]
+        print(f"Closed!")
 
 

@@ -1,12 +1,17 @@
+from typing import Literal
 from portal_env import EnvSidePortal
 import gymnasium
 import retro
 
 
 class GymnasiumWrapper(gymnasium.Env):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, use_restricted_actions: Literal['discrete'] = None, **kwargs):
         super().__init__()
-        self.retro_env = retro.make(*args, **kwargs)
+        processed_kwargs = {}
+        if use_restricted_actions is not None:
+            if use_restricted_actions == "discrete":
+                processed_kwargs["use_restricted_actions"] = retro.Actions.DISCRETE
+        self.retro_env = retro.make(*args, **processed_kwargs, **kwargs)
 
     @property
     def action_space(self):

@@ -1,1 +1,1 @@
-recursive-include portal_env/envs *.env *.py
+recursive-include portal_env/envs *.env

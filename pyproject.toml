@@ -4,17 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "portal-env"
-version = "0.3.2"
+version = "0.3.3"
 description = "A package that simplifies RL development by conveniently running RL environments in isolated Docker containers, avoiding dependencies conflicts. The agent interacts with the isolated environment through a Gymnasium interface that functions as a relay."
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Leor Cohen", email = "liorcohen5@campus.technion.ac.il"},
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
     "portal",
@@ -27,8 +26,14 @@ dependencies = [
 Homepage = "https://github.com/leor-c/portal-env"
 Repository = "https://github.com/leor-c/portal-env.git"
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.package-data]
-"portal_env" = ["envs/**/*.env", "envs/**/*.py"]
+portal_env = ["envs/**/*.env"]
+
+[tool.setuptools.packages.find]
+where = ["."]
 
 [project.scripts]
 portal-env = "portal_env.env_side_cli:main"

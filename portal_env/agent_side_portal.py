@@ -37,11 +37,11 @@ class AgentSidePortal(gym.Env):
             env_kwargs = {}
         assert isinstance(env_kwargs, dict), "env_kwargs must be a dict"
 
-        self._init_env(*env_args, **env_kwargs)
+        self._init_env(env_args, env_kwargs)
 
-    def _init_env(self, *args, **kwargs):
+    def _init_env(self, env_args, env_kwargs):
         assert self._env_id is None, "Environment already initialized"
-        future = self.portal.create(*args, **kwargs)
+        future = self.portal.create(env_args, env_kwargs)
         self._env_id = future.result()
 
     def _assert_env_init(self):
@@ -70,3 +70,8 @@ class AgentSidePortal(gym.Env):
         self._assert_env_init()
         future = self.portal.observation_space(self._env_id)
         return parse_gym_space(future.result())
+    
+    def __del__(self):
+        self.portal.close_env(self._env_id).result()
+        if hasattr(super(), '__del__'):
+            super().__del__()
