@@ -71,7 +71,14 @@ class AgentSidePortal(gym.Env):
         future = self.portal.observation_space(self._env_id)
         return parse_gym_space(future.result())
     
+    def close(self):
+        future = self.portal.close_env(self._env_id)
+        res = future.result()
+        assert res, f"Failed to close env (response='{res}')"
+        self._env_id = None
+    
     def __del__(self):
-        self.portal.close_env(self._env_id).result()
+        if self._env_id is not None:
+            self.close()
         if hasattr(super(), '__del__'):
             super().__del__()

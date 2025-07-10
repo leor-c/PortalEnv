@@ -70,5 +70,6 @@ class EnvSidePortal:
             self._envs[env_id].close()
             del self._envs[env_id]
         print(f"Closed!", flush=True)
+        return True
 
 

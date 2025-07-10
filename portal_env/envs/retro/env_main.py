@@ -12,6 +12,7 @@ class GymnasiumWrapper(gymnasium.Env):
             if use_restricted_actions == "discrete":
                 processed_kwargs["use_restricted_actions"] = retro.Actions.DISCRETE
         self.retro_env = retro.make(*args, **processed_kwargs, **kwargs)
+        self._is_closed = False
 
     @property
     def action_space(self):
@@ -29,6 +30,15 @@ class GymnasiumWrapper(gymnasium.Env):
     
     def reset(self, *, seed = None, options = None):
         return self.retro_env.reset(), {}
+    
+    def close(self):
+        self.retro_env.close()
+        self._is_closed = True
+
+    def __del__(self):
+        if not self._is_closed:
+            self.close()
+            del self.retro_env
 
 
 def main():
