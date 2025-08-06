@@ -2,3 +2,4 @@ portal
 gymnasium
 click
 numpy
+pyyaml
