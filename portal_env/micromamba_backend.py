@@ -12,10 +12,13 @@ def read_env_name(yaml_path):
     return data.get("name")
 
 
-def get_micromamba_env_path(env_name: str, root_prefix="~/micromamba") -> Union[Path, None]:
+def get_micromamba_env_path(env_name: str, root_prefix=None) -> Union[Path, None]:
+    query = ["micromamba", "env", "list", "--json"]
+    if root_prefix is not None:
+        query += [ "--root-prefix", root_prefix]
     try:
         result = subprocess.run(
-            ["micromamba", "env", "list", "--json", "--root-prefix", root_prefix],
+            query,
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -24,16 +27,13 @@ def get_micromamba_env_path(env_name: str, root_prefix="~/micromamba") -> Union[
         import json
         envs = json.loads(result.stdout)["envs"]
         for env in envs:
-            if env.endswith(f"/envs/{env_name}"):
+            suffix = Path('envs') / env_name
+            if env.endswith(str(suffix)):
                 return Path(env)
             
     except Exception as e:
         print("Error checking micromamba environments:", e)
         return None
-    
-
-def micromamba_env_exists(env_name: str, root_prefix="~/micromamba"):
-    return (get_micromamba_env_path(env_name=env_name, root_prefix=root_prefix) is not None)
 
 
 def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
@@ -59,7 +59,8 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
         print("Building micromamba env...")
         subprocess.run(["micromamba", "create", "-f", micromamba_spec_path.absolute()], check=True)
         micromamba_env_path = get_micromamba_env_path(micromamba_env_name)
-    
+        assert micromamba_env_path is not None
+
     if build_flag:
         print('Updating micromamba env...')
         # "micromamba env update --file environment.yml --prune"
@@ -67,7 +68,7 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
 
     # Run the server:
     run_args = [
-        micromamba_env_path.absolute(), env_main_path.absolute()
+        "micromamba", "run", "-n", micromamba_env_name, "python", env_main_path.absolute()
     ]
     run_args.append(micromamba_env_name)
     subprocess.run(run_args, cwd=str(pkg_path), check=True)

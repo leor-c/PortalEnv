@@ -20,6 +20,7 @@ dependencies = [
     "gymnasium",
     "click",
     "numpy",
+    "pyyaml",
 ]
 
 [project.urls]
