@@ -57,7 +57,7 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
     micromamba_env_path = get_micromamba_env_path(micromamba_env_name)
     if micromamba_env_path is None:
         print("Building micromamba env...")
-        subprocess.run(["micromamba", "create", "-f", micromamba_spec_path.absolute()], check=True)
+        subprocess.run(["micromamba", "create", "-f", micromamba_spec_path.absolute(), "-y"], check=True)
         micromamba_env_path = get_micromamba_env_path(micromamba_env_name)
         assert micromamba_env_path is not None
 
