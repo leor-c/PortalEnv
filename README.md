@@ -34,6 +34,7 @@ the agent and the environment while keeping their runtime environments isolated.
 #### Requirements
 - Docker
 - Unix-based OS if not using Docker to run your agent
+- Optional: [micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html) for a Docker-free mode.
 
 ```bash
 pip install portal-env
@@ -129,6 +130,8 @@ This command will start the environment portal by automatically building the Doc
 starting a corresponding Docker container.
 As in the example above, environment setup arguments should be passed to the `AgentSidePortal` (agent-side).
 
+----
+
 #### Custom Environment Portals
 
 To interact with a custom environment, you need to provide two files:
@@ -187,6 +190,20 @@ portal-env start -p <path-to-custom-env-dir> <env-name>
 ```
 where `<path-to-custom-env-dir>` is the path to the directory containing the `Dockerfile.env` and `env_main.py` files,
 and `<env-name>` is the name of the environment (should be unique).
+
+---
+
+#### Micromamba Backend
+Portal-env inculdes two backends for running and serving the environment-side portal: `docker` and `micromamba`.
+While the default Docker backend is usually the recommended option, it is not viable in some use cases e.g., when running code on remote servers that require a single contrainer.
+
+To overcome this limitation, portal-env provides a `micromamba` backend that sets up a micromamba runtime environment and serves the RL environment-side portal.
+Here, instead of the `Dockerfile.env` file, the micromamba backend expects a `spec.yml` file for creating the python environment, and an optional `env_setup.py` file for setting up additional dependencies of the environment. These files are available for the supported environments. Please consider them as examples if you need to write your own custom environment portal with the `micromamba` backend.
+
+To launch an environment, use the same `portal-env` cli command with an additional `--backend micromamba` argument:
+```
+portal-env start <env_name> --backend micromamba
+```
 
 
 

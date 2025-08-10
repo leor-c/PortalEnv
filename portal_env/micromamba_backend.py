@@ -42,15 +42,15 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
     pkg_path = files("portal_env")
 
     if custom_path is not None:
+        path_prefix = custom_path
         micromamba_spec_path = custom_path / "spec.yml"
         env_main_path = custom_path / "env_main.py"
         assert micromamba_spec_path.exists() and env_main_path.exists(), "Custom path must contain spec.yml and env_main.py files"
     else:
+        path_prefix = env_path
         micromamba_spec_path = env_path / "spec.yml"
         env_main_path = env_path / "env_main.py"
-
-    # Convert to string path
-    env_dir = str(env_path) if custom_path is None else str(custom_path)
+    env_setup_path = path_prefix / "env_setup.py"
 
     # Run micromamba create / update and run using that directory as the working dir
     micromamba_env_name = read_env_name(micromamba_spec_path)
@@ -60,6 +60,9 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
         subprocess.run(["micromamba", "create", "-f", micromamba_spec_path.absolute(), "-y"], check=True)
         micromamba_env_path = get_micromamba_env_path(micromamba_env_name)
         assert micromamba_env_path is not None
+
+        if env_setup_path.exists():
+            subprocess.run(["micromamba", "run", "-n", micromamba_env_name, "python", env_setup_path], check=True)
 
     if build_flag:
         print('Updating micromamba env...')

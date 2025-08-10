@@ -1,4 +1,4 @@
-name: portal-env_ale
+name: portal-env_mujoco
 channels:
   - conda-forge
   - defaults
