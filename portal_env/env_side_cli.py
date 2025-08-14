@@ -4,6 +4,7 @@ CLI tool for automatically generating the docker files and running the env porta
 from typing import Literal, Optional
 import click
 from pathlib import Path
+from portal_env.utils import EnvNotSupportedError
 
 supported_envs_aliases = {
     "atari": "ale",
@@ -63,7 +64,10 @@ def build(backend: Literal['docker', 'micromamba'], env_name: Optional[str], for
 
     if env_name is None:
         for env_name in supported_envs:
-            build_env_if_necessary(env_name, force_build)
+            try:
+                build_env_if_necessary(env_name, force_build)
+            except EnvNotSupportedError:
+                pass
     else:
         build_env_if_necessary(env_name, force_build, custom_path)
 

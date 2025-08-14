@@ -6,6 +6,7 @@ from functools import partial
 from portal_env.config import config
 from portal_env.utils import handle_raw_integer
 from typing import Callable, Any
+from loguru import logger
 
 
 class EnvSidePortal:
@@ -30,6 +31,8 @@ class EnvSidePortal:
             env_id = self._next_id
             self._envs[env_id] = env
             self._next_id += 1
+        
+        logger.info(f"Launched a new environment with id={env_id}")
         return env_id
 
     def _reset_handler(self, env_id: int):
@@ -58,18 +61,18 @@ class EnvSidePortal:
     def __del__(self):
         with self._lock:
             for env_id, env in self._envs.items():
-                print(f"Closing environment '{env_id}'...", flush=True)
+                logger.info(f"Closing environment '{env_id}'...", flush=True)
                 env.close()
-        print(f"Closed all envs!", flush=True)
+        logger.info(f"Closed all envs!", flush=True)
 
     def _close_env_handler(self, env_id: int):
         env_id = handle_raw_integer(env_id)
         assert env_id in self._envs, f"Invalid env_id: {env_id}"
-        print(f"Closing env '{env_id}'...", flush=True)
+        logger.info(f"Closing env '{env_id}'...", flush=True)
         with self._lock:
             self._envs[env_id].close()
             del self._envs[env_id]
-        print(f"Closed!", flush=True)
+        logger.info(f"Closed!", flush=True)
         return True
 
 

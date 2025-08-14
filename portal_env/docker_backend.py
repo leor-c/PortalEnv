@@ -1,9 +1,10 @@
 import subprocess
 from importlib.resources import files
 from portal_env.config import config
-from portal_env.utils import docker_image_exists, ensure_docker_network_exists
+from portal_env.utils import docker_image_exists, ensure_docker_network_exists, EnvNotSupportedError
 from pathlib import Path
 from typing import Optional
+from loguru import logger
 
 
 def build_env_if_necessary(env_name: str, build_flag: bool, custom_path: Optional[Path]) -> str:
@@ -13,7 +14,8 @@ def build_env_if_necessary(env_name: str, build_flag: bool, custom_path: Optiona
     if custom_path is not None:
         dockerfile_path = custom_path / "Dockerfile.env"
         env_main_path = custom_path / "env_main.py"
-        assert dockerfile_path.exists() and env_main_path.exists(), "Custom path must contain Dockerfile.env and env_main.py files"
+        if not (dockerfile_path.exists() and env_main_path.exists()):
+            raise EnvNotSupportedError("Custom path must contain Dockerfile.env and env_main.py files")
     else:
         dockerfile_path = f"Dockerfile.env"
 
@@ -25,7 +27,7 @@ def build_env_if_necessary(env_name: str, build_flag: bool, custom_path: Optiona
     container_name = f"{config.host_name}_{env_name}"
     image_name = container_name
     if build_flag or (not docker_image_exists(image_name)):
-        print("Building image...")
+        logger.info(f"Building image for '{env_name}'...")
         subprocess.run(["docker", "build", "-f", dockerfile_path, "-t", image_name, "."], cwd=env_dir, check=True)
 
     # Check if a docker network exists, create if not:
@@ -38,7 +40,7 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Optional
     pkg_path = files("portal_env")
     container_name = build_env_if_necessary(env_name, build_flag, custom_path)
     image_name = container_name
-    
+
     # Run the container:
     run_args = [
         "docker", "run", "--rm", "--name", container_name, "-v", ".:/app/portal_env",

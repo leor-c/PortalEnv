@@ -7,6 +7,10 @@ import ast
 import re
 
 
+class EnvNotSupportedError(Exception):
+    pass
+
+
 def handle_raw_integer(x):
     """
     Apparently, portal modifies the original data type of the integer and converts it to np.ndarray.

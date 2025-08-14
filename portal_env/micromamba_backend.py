@@ -2,8 +2,10 @@ from typing import Literal, Union, Optional
 import subprocess
 from importlib.resources import files
 from portal_env.config import config
+from portal_env.utils import EnvNotSupportedError
 from pathlib import Path
 import yaml
+from loguru import logger
 
 
 def read_env_name(yaml_path):
@@ -32,7 +34,7 @@ def get_micromamba_env_path(env_name: str, root_prefix=None) -> Union[Path, None
                 return Path(env)
             
     except Exception as e:
-        print("Error checking micromamba environments:", e)
+        logger.error("Error checking micromamba environments:", e)
         return None    
 
 
@@ -44,13 +46,14 @@ def build_env_if_necessary(env_name: str, build_flag: bool, custom_path: Optiona
     micromamba_spec_path = path_prefix / "spec.yml"
     env_main_path = path_prefix / "env_main.py"
     env_setup_path = path_prefix / "env_setup.py"
-    assert micromamba_spec_path.exists() and env_main_path.exists(), "Custom path must contain spec.yml and env_main.py files"
+    if not (micromamba_spec_path.exists() and env_main_path.exists()):
+        raise EnvNotSupportedError(f"Could not locate spec.yml and env_main.py files in '{path_prefix}'")
 
     # Run micromamba create / update and run using that directory as the working dir
     micromamba_env_name = read_env_name(micromamba_spec_path)
     micromamba_env_path = get_micromamba_env_path(micromamba_env_name)
     if micromamba_env_path is None:
-        print("Building micromamba env...")
+        logger.info(f"Building micromamba env for '{env_name}'...")
         subprocess.run(["micromamba", "create", "-f", micromamba_spec_path.absolute(), "-y"], check=True)
         micromamba_env_path = get_micromamba_env_path(micromamba_env_name)
         assert micromamba_env_path is not None
@@ -59,7 +62,7 @@ def build_env_if_necessary(env_name: str, build_flag: bool, custom_path: Optiona
             subprocess.run(["micromamba", "run", "-n", micromamba_env_name, "python", env_setup_path], check=True)
 
     elif build_flag:
-        print('Updating micromamba env...')
+        logger.info('Updating micromamba env...')
         # "micromamba env update --file environment.yml --prune"
         subprocess.run(["micromamba", "env", "update", "--file", micromamba_spec_path.absolute(), "--prune"], check=True)
 
