@@ -3,12 +3,12 @@ from importlib.resources import files
 from portal_env.config import config
 from portal_env.utils import docker_image_exists, ensure_docker_network_exists
 from pathlib import Path
+from typing import Optional
 
 
-def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
+def build_env_if_necessary(env_name: str, build_flag: bool, custom_path: Optional[Path]) -> str:
     # Locate the path to the target env directory
     env_path = files("portal_env.envs").joinpath(env_name)
-    pkg_path = files("portal_env")
 
     if custom_path is not None:
         dockerfile_path = custom_path / "Dockerfile.env"
@@ -31,6 +31,14 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
     # Check if a docker network exists, create if not:
     ensure_docker_network_exists(config.docker_network_name)
 
+    return container_name
+
+
+def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Optional[Path] = None):
+    pkg_path = files("portal_env")
+    container_name = build_env_if_necessary(env_name, build_flag, custom_path)
+    image_name = container_name
+    
     # Run the container:
     run_args = [
         "docker", "run", "--rm", "--name", container_name, "-v", ".:/app/portal_env",

@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal, Union, Optional
 import subprocess
 from importlib.resources import files
 from portal_env.config import config
@@ -33,24 +33,18 @@ def get_micromamba_env_path(env_name: str, root_prefix=None) -> Union[Path, None
             
     except Exception as e:
         print("Error checking micromamba environments:", e)
-        return None
+        return None    
 
 
-def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
+def build_env_if_necessary(env_name: str, build_flag: bool, custom_path: Optional[Path] = None) -> str:
     # Locate the path to the target env directory
     env_path = files("portal_env.envs").joinpath(env_name)
-    pkg_path = files("portal_env")
 
-    if custom_path is not None:
-        path_prefix = custom_path
-        micromamba_spec_path = custom_path / "spec.yml"
-        env_main_path = custom_path / "env_main.py"
-        assert micromamba_spec_path.exists() and env_main_path.exists(), "Custom path must contain spec.yml and env_main.py files"
-    else:
-        path_prefix = env_path
-        micromamba_spec_path = env_path / "spec.yml"
-        env_main_path = env_path / "env_main.py"
+    path_prefix = env_path if custom_path is None else custom_path
+    micromamba_spec_path = path_prefix / "spec.yml"
+    env_main_path = path_prefix / "env_main.py"
     env_setup_path = path_prefix / "env_setup.py"
+    assert micromamba_spec_path.exists() and env_main_path.exists(), "Custom path must contain spec.yml and env_main.py files"
 
     # Run micromamba create / update and run using that directory as the working dir
     micromamba_env_name = read_env_name(micromamba_spec_path)
@@ -64,12 +58,22 @@ def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Path):
         if env_setup_path.exists():
             subprocess.run(["micromamba", "run", "-n", micromamba_env_name, "python", env_setup_path], check=True)
 
-    if build_flag:
+    elif build_flag:
         print('Updating micromamba env...')
         # "micromamba env update --file environment.yml --prune"
         subprocess.run(["micromamba", "env", "update", "--file", micromamba_spec_path.absolute(), "--prune"], check=True)
 
+    return micromamba_env_name
+
+
+def run_env(env_name: str, detach: bool, build_flag: bool, custom_path: Optional[Path]):
+    env_path = files("portal_env.envs").joinpath(env_name)
+    pkg_path = files("portal_env")
+    micromamba_env_name = build_env_if_necessary(env_name, build_flag, custom_path)
+
     # Run the server:
+    path_prefix = env_path if custom_path is None else custom_path
+    env_main_path = path_prefix / "env_main.py"
     run_args = [
         "micromamba", "run", "-n", micromamba_env_name, "python", env_main_path.absolute()
     ]

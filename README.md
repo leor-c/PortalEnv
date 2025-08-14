@@ -194,16 +194,21 @@ and `<env-name>` is the name of the environment (should be unique).
 ---
 
 #### Micromamba Backend
-Portal-env inculdes two backends for running and serving the environment-side portal: `docker` and `micromamba`.
+Portal-env inculdes two backends for running and serving the environment-side portal: `docker` and `micromamba` (with a `mm` alias for convenience).
 While the default Docker backend is usually the recommended option, it is not viable in some use cases e.g., when running code on remote servers that require a single contrainer.
 
 To overcome this limitation, portal-env provides a `micromamba` backend that sets up a micromamba runtime environment and serves the RL environment-side portal.
-Here, instead of the `Dockerfile.env` file, the micromamba backend expects a `spec.yml` file for creating the python environment, and an optional `env_setup.py` file for setting up additional dependencies of the environment. These files are available for the supported environments. Please consider them as examples if you need to write your own custom environment portal with the `micromamba` backend.
+Here, instead of the `Dockerfile.env` file, the micromamba backend expects a `spec.yml` file for creating the python environment, and an optional `env_setup.py` file for setting up additional dependencies of the environment. These files are available for some of the supported environments. Please consider them as examples if you need to write your own custom environment portal with the `micromamba` backend.
 
-To launch an environment, use the same `portal-env` cli command with an additional `--backend micromamba` argument:
+To launch an environment, use the same `portal-env` cli command with an additional `-b micromamba` argument or its `-b mm` alias:
 ```
-portal-env start <env_name> --backend micromamba
+portal-env start <env_name> -b mm
 ```
+
+
+### Other CLI functionality
+#### The `build` Command
+Use `portal-env build -e <env_name> -b <backend>` to build the environment-side portal service without launching it.
 
 
 

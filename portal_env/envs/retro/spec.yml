@@ -12,3 +12,4 @@ dependencies:
       - gym-retro 
       - gym==0.22.0
       - platformdirs
+      - wget

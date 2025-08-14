@@ -3,3 +3,4 @@ gymnasium
 click
 numpy
 pyyaml
+wget

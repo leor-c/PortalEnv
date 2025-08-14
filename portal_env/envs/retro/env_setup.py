@@ -4,6 +4,7 @@ import os
 import urllib.request
 import zipfile
 import subprocess
+import wget
 
 
 def main():
@@ -18,7 +19,7 @@ def main():
 
         # Download the zip file
         # print("Downloading ROMs...")
-        urllib.request.urlretrieve(zip_url, zip_path)
+        wget.download(zip_url, zip_path)
 
         # Unzip it
         print("Extracting...")
