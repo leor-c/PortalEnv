@@ -117,6 +117,7 @@ Currently, we support the following environments:
 - [OpenAI Retro](https://github.com/openai/retro) (`retro`)
 - [Craftium](https://github.com/mikelma/craftium) (`craftium`)
 - [Flappy Bird](https://github.com/robertoschiavone/flappy-bird-env) (`flappy-bird`)
+- [ViZDoom](https://github.com/Farama-Foundation/ViZDoom) (`vizdoom`)
 
 We hope to support more environments in the future.
 Contributions are welcome!
