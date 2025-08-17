@@ -64,6 +64,7 @@ class GymnasiumWrapper(gymnasium.Env):
         truncated = False
 
         obs = np.ascontiguousarray(obs)
+        obs = np.asarray(obs, order='C')
         return obs, reward, terminated, truncated, info
     
     def reset(self, *, seed = None, options = None):
