@@ -3,11 +3,12 @@
 
 A tool for Reinforcement Learning development that separates the runtime environments of agents and RL environments. 
 This tool addresses the challenges of dependency management in RL development (e.g., conflicting dependencies) by serving 
-RL environments through isolated Docker containers.
+RL environments through isolated Docker containers or Micromamba envs without compromising on performance.
 
 * Experimenting with new RL environments without irreversible changes to your Python / Conda environment is now possible!
 * Want to use that one environment that requires an ancient Ubuntu & Python 2.7? No problem!
 * Multiple RL environments with conflicting dependencies can coexist without any issues!
+* Maintaining high performance, no interaction speed degradation! 
 
 
 Portal-Env creates a clean separation between:
@@ -115,6 +116,7 @@ Currently, we support the following environments:
 - Mujoco and Gymnasium environments (`mujoco`)
 - [OpenAI Retro](https://github.com/openai/retro) (`retro`)
 - [Craftium](https://github.com/mikelma/craftium) (`craftium`)
+- [Flappy Bird](https://github.com/robertoschiavone/flappy-bird-env) (`flappy-bird`)
 
 We hope to support more environments in the future.
 Contributions are welcome!

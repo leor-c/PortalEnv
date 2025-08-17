@@ -14,6 +14,7 @@ supported_envs = [
     "mujoco",
     "retro",
     "craftium",
+    "flappy-bird"
 ]
 
 
