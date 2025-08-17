@@ -9,6 +9,7 @@ import urllib.request
 import zipfile
 import subprocess
 import wget
+import numpy as np
 
 
 class GymnasiumWrapper(gymnasium.Env):
@@ -61,6 +62,8 @@ class GymnasiumWrapper(gymnasium.Env):
         obs, reward, done, info = self.retro_env.step(action)
         terminated = done
         truncated = False
+
+        obs = np.ascontiguousarray(obs)
         return obs, reward, terminated, truncated, info
     
     def reset(self, *, seed = None, options = None):
