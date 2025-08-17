@@ -63,11 +63,11 @@ class GymnasiumWrapper(gymnasium.Env):
         terminated = done
         truncated = False
 
-        obs = np.array(obs, dtype=np.float32, order='C', copy=True)
+        obs = np.ascontiguousarray(obs)
         return obs, reward, terminated, truncated, info
     
     def reset(self, *, seed = None, options = None):
-        return self.retro_env.reset(), {}
+        return np.ascontiguousarray(self.retro_env.reset()), {}
     
     def close(self):
         self.retro_env.close()
