@@ -97,7 +97,7 @@ class AsyncWrapper(gymnasium.Env):
         return obs[0], info
     
     def step(self, action):
-        obs, reward, terminated, truncated, info = self.env.step(action)
+        obs, reward, terminated, truncated, info = self.env.step([action])
         return obs[0], reward, terminated, truncated, info
     
 
