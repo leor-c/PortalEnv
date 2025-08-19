@@ -52,11 +52,17 @@ class GymnasiumWrapper(gymnasium.Env):
 
     @property
     def action_space(self):
-        return self.retro_env.action_space
+        return gymnasium.spaces.MultiBinary(n=self.retro_env.action_space.n)
     
     @property
     def observation_space(self):
-        return self.retro_env.observation_space
+        base_space = self.retro_env.observation_space
+        return gymnasium.spaces.Box(
+            low=base_space.low,
+            high=base_space.high,
+            shape=base_space.shape,
+            dtype=base_space.dtype
+        )
 
     def step(self, action):
         obs, reward, done, info = self.retro_env.step(action)
@@ -79,8 +85,30 @@ class GymnasiumWrapper(gymnasium.Env):
             del self.retro_env
 
 
+class AsyncWrapper(gymnasium.Env):
+    def __init__(self, env_factory):
+        super().__init__()
+        self.env = gymnasium.vector.AsyncVectorEnv([env_factory])
+        self.action_space = self.env.single_action_space
+        self.observation_space = self.env.single_observation_space
+
+    def reset(self, *, seed = None, options = None):
+        obs, info = self.env.reset(seed=seed, options=options)
+        return obs[0], info
+    
+    def step(self, action):
+        obs, reward, terminated, truncated, info = self.env.step(action)
+        return obs[0], reward, terminated, truncated, info
+    
+
+def env_factory(*arg, **kwargs):
+    return AsyncWrapper(GymnasiumWrapper(*arg, **kwargs))
+
+
 def main():
-    portal = EnvSidePortal(env_factory=GymnasiumWrapper)
+    env = AsyncWrapper(lambda: GymnasiumWrapper('SonicTheHedgehog-Genesis'))
+    print(f'success! {env.observation_space}, {env.action_space}, {env.reset()}')
+    portal = EnvSidePortal(env_factory=env_factory)
     portal.start()
 
 
