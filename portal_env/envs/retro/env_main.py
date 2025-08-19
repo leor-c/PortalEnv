@@ -102,12 +102,10 @@ class AsyncWrapper(gymnasium.Env):
     
 
 def env_factory(*arg, **kwargs):
-    return AsyncWrapper(GymnasiumWrapper(*arg, **kwargs))
+    return AsyncWrapper(env_factory=lambda: GymnasiumWrapper(*arg, **kwargs))
 
 
 def main():
-    env = AsyncWrapper(lambda: GymnasiumWrapper('SonicTheHedgehog-Genesis'))
-    print(f'success! {env.observation_space}, {env.action_space}, {env.reset()}')
     portal = EnvSidePortal(env_factory=env_factory)
     portal.start()
 
