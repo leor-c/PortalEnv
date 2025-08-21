@@ -1,5 +1,6 @@
 from typing import Literal
 from portal_env import EnvSidePortal
+from portal_env.config import config
 import gymnasium
 import retro
 from pathlib import Path
@@ -106,7 +107,7 @@ def env_factory(*arg, **kwargs):
 
 
 def main():
-    portal = EnvSidePortal(env_factory=env_factory)
+    portal = EnvSidePortal(env_factory=env_factory, port=config.env_ports['retro'])
     portal.start()
 
 

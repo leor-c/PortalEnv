@@ -1,4 +1,5 @@
 from portal_env import EnvSidePortal
+from portal_env.config import config
 import gymnasium
 import numpy as np
 import craftium
@@ -21,7 +22,7 @@ def env_factory(*args, **kwargs):
 
 
 def main():
-    portal = EnvSidePortal(env_factory=env_factory)
+    portal = EnvSidePortal(env_factory=env_factory, port=config.env_ports['craftium'])
     portal.start()
 
 

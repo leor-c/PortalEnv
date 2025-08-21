@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "portal-env"
-version = "0.7.7"
+version = "0.7.8"
 description = "A package that simplifies RL development by conveniently running RL environments in isolated Docker containers, avoiding dependencies conflicts. The agent interacts with the isolated environment through a Gymnasium interface that functions as a relay."
 readme = "README.md"
 requires-python = ">=3.8"

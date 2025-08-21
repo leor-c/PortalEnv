@@ -2,7 +2,7 @@ import portal
 import numpy as np
 from typing import Any, Optional, Iterable, Union, List, Tuple, Dict
 import gymnasium as gym
-from portal_env.config import config
+from portal_env.config import config, env_ports
 from portal_env.utils import parse_gym_space
 
 
@@ -27,7 +27,12 @@ class AgentSidePortal(gym.Env):
         host_name = 'localhost'
         if agent_in_docker:
             host_name = f"{config.host_name}_{env_name}"
-        self.portal = portal.Client(f"{host_name}:{config.port}")
+
+        if env_name in env_ports:
+            port = config.env_ports[env_name]
+        else:
+            port = config.port
+        self.portal = portal.Client(f"{host_name}:{port}")
         self._env_id = None
 
         if env_args is None:
