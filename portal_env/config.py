@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
+from typing import Dict
 
 
 @dataclass()
 class Config:
     host_name: str = "env_portal"
     port: int = 7000
-    env_ports: dict[str, int] = field(default_factory=dict)
+    env_ports: Dict[str, int] = field(default_factory=dict)
     docker_network_name: str = "portal_env_net"
 
 
