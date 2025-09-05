@@ -37,9 +37,9 @@ def main():
     clone_cmd = ['git', 'clone', '--recurse-submodules', 'https://github.com/mikelma/craftium.git']
     subprocess.run(clone_cmd, check=True, cwd=craftium_clone_path)
 
-    subprocess.run(['uv pip', 'install', '--upgrade', 'pip'], check=True)
-    subprocess.run(['uv pip', 'install', '--upgrade', 'setuptools'], check=True)
-    subprocess.run(['uv pip', 'install', '.'], check=True, cwd=craftium_clone_path / 'craftium') # portal loguru gymnasium
+    subprocess.run(['uv', 'pip', 'install', '--upgrade', 'pip'], check=True)
+    subprocess.run(['uv', 'pip', 'install', '--upgrade', 'setuptools'], check=True)
+    subprocess.run(['uv', 'pip', 'install', '.'], check=True, cwd=craftium_clone_path / 'craftium') # portal loguru gymnasium
 
 
 if __name__ == '__main__':
