@@ -16,8 +16,35 @@ class PortalWrapper(gymnasium.Wrapper):
         return self.env.step(action)
     
 
+class HardResetCraftium(gymnasium.Env):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self._args = args
+        self._kwargs = kwargs
+        self._env = gymnasium.make(*args, **kwargs)
+        self.action_space = self._env.action_space
+        self.observation_space = self._env.observation_space
+
+    def reset(self, *, seed=None, options=None):
+        self._env.close()
+        self._env = gymnasium.make(*self._args, **self._kwargs)
+        return self._env.reset(seed=seed, options=options)
+
+    def step(self, action):
+        return self._env.step(action)
+
+    def close(self):
+        return self._env.close()
+
+    def render(self):
+        return self._env.render()
+
+    def __getattr__(self, name):
+        return getattr(self._env, name)
+    
+
 def env_factory(*args, **kwargs):
-    env = gymnasium.make(*args, **kwargs)
+    env = HardResetCraftium(*args, **kwargs)
     return PortalWrapper(env)
 
 
