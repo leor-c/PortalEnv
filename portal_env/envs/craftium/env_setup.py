@@ -31,15 +31,13 @@ def main():
     apt_cmd += ["apt-get", "install", "-y", "--no-install-recommends", "--fix-missing", "--fix-broken", *APT_PKGS_DEFAULT]
     subprocess.run(apt_cmd, check=True)
 
-    subprocess.run(["pip", "install", "uv"], check=True)
-
     craftium_clone_path = Path('.')
     clone_cmd = ['git', 'clone', '--recurse-submodules', 'https://github.com/mikelma/craftium.git']
     subprocess.run(clone_cmd, check=True, cwd=craftium_clone_path)
 
-    subprocess.run(['uv', 'pip', 'install', '--upgrade', 'pip'], check=True)
-    subprocess.run(['uv', 'pip', 'install', '--upgrade', 'setuptools'], check=True)
-    subprocess.run(['uv', 'pip', 'install', '.'], check=True, cwd=craftium_clone_path / 'craftium') # portal loguru gymnasium
+    subprocess.run(['pip', 'install', '--upgrade', 'pip'], check=True)
+    subprocess.run(['pip', 'install', '--upgrade', 'setuptools'], check=True)
+    subprocess.run(['pip', 'install', '.'], check=True, cwd=craftium_clone_path / 'craftium') # portal loguru gymnasium
 
 
 if __name__ == '__main__':
