@@ -31,7 +31,7 @@ def main():
     apt_cmd += ["apt-get", "install", "-y", "--no-install-recommends", "--fix-missing", "--fix-broken", *APT_PKGS_DEFAULT]
     subprocess.run(apt_cmd, check=True)
 
-    subprocess.run(['pip install uv'], check=True)
+    subprocess.run(["pip", "install", "uv"], check=True)
 
     craftium_clone_path = Path('.')
     clone_cmd = ['git', 'clone', '--recurse-submodules', 'https://github.com/mikelma/craftium.git']
