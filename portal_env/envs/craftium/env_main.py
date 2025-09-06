@@ -44,7 +44,7 @@ class HardResetCraftium(gymnasium.Env):
     
 
 def env_factory(*args, **kwargs):
-    env = HardResetCraftium(*args, **kwargs)
+    env = gymnasium.make(*args, **kwargs)
     return PortalWrapper(env)
 
 
